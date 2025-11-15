@@ -1,6 +1,6 @@
-import Weather from "../pages/Weather";
-import Counter from "../pages/Counter";
 import HomePage from "../pages/Home";
+import About from "../pages/About";
+import Journal from "../pages/Journal";
 
 /**
  * TODO: Modify this constant to point to the URL of your backend.
@@ -24,16 +24,16 @@ export const PATHS: {
     {
         link: "/",
         label: "Home",
-        element: <HomePage />,
+        element: <HomePage/>,
     },
     {
-        link: "/weather",
-        label: "Weather",
-        element: <Weather />,
+        link: "/journal",
+        label: "Journal",
+        element: <Journal/>,
     },
     {
-        link: "/counter",
-        label: "Counter",
-        element: <Counter />,
+        link: "/about",
+        label: "About",
+        element: <About/>,
     },
 ];
