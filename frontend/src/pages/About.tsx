@@ -1,4 +1,3 @@
-
 const About = () => {
     return (
         <div style={{textAlign:"center",marginTop:"80px"}}>
