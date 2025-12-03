@@ -11,6 +11,14 @@ type Post = {
 
 const Journal = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [likes, setLikes] = useState<{ [key: string]: number }>({});
+
+  const handleLike = (postId: string) => {
+    setLikes(prev => ({
+      ...prev,
+      [postId]: (prev[postId] || 0) + 1
+    }));
+  };
   const [newPost, setNewPost] = useState("");
   const user = useAuth();
 
@@ -94,78 +102,130 @@ const Journal = () => {
   // UI
   // ---------------------------
   return (
-    <div style={{ textAlign: "center", marginTop: "80px" }}>
-      <h1 style={{ color: "#c457d4" }}>My Hijabi Journal</h1>
+    <div style={styles.page}>
+      <h1 style={styles.heading}>My Hijabi Journal</h1>
 
-      {/* MESSAGE IF NOT LOGGED IN */}
       {!user && (
-        <p style={{ color: "#888", marginBottom: "20px" }}>
-          You must be logged in to write or edit journal entries. Go to the
-          Login page.
+        <p style={styles.msg}>
+          You must be logged in to write or edit journal entries.
         </p>
       )}
 
-      {/* If no posts */}
       {posts.length === 0 ? (
-        <p style={{ color: "#fa46bb", marginTop: "20px" }}>
-          No journal entries yet...
-        </p>
+        <p style={styles.noPosts}>No journal entries yet...</p>
       ) : (
         posts.map((post) => (
-          <div key={post.id}>
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
+          <div key={post.id} style={styles.postCard}>
+            <h3 style={styles.postTitle}>{post.title}</h3>
+            <p style={styles.postContent}>{post.content}</p>
+            <div style={styles.actions}>
+              <button onClick={() => handleLike(post.id)} style={styles.button}>
+                ❤️ Like ({likes[post.id] || 0})
+              </button>
+            </div>
 
-            {/* Only allow editing/deleting when logged in */}
+
             {user && (
-              <>
-                <button
-                  onClick={() => handleEdit(post.id)}
-                  style={{ marginRight: "10px" }}
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() => handleDelete(post.id)}
-                  style={{
-                    color: "white",
-                    backgroundColor: "#ff4b4b",
-                    border: "none",
-                    padding: "5px 10px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Delete
-                </button>
-              </>
+              <div style={styles.actions}>
+                <button onClick={() => handleEdit(post.id)} style={styles.button}>Edit</button>
+                <button onClick={() => handleDelete(post.id)} style={styles.button}>Delete</button>
+              </div>
             )}
-
-            <hr style={{ width: "300px", marginTop: "15px" }} />
           </div>
         ))
       )}
 
-      {/* NEW POST INPUT */}
       <input
         type="text"
         value={newPost}
         onChange={(e) => setNewPost(e.target.value)}
-        placeholder="Write a new journal entry…"
+        placeholder="Write a new journal entry..."
         disabled={!user}
-        style={{ padding: "10px", width: "300px", marginTop: "20px" }}
+        style={styles.formInput}
       />
 
       <button
         onClick={handleSubmit}
         disabled={!user}
-        style={{ padding: "10px", marginLeft: "10px" }}
+        style={styles.submitBtn}
       >
         Submit
       </button>
     </div>
   );
+};
+const styles: { [key: string]: React.CSSProperties } = {
+  page: {
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: '80px',
+    padding: '20px',
+  },
+  heading: {
+    textAlign: 'center',
+    color: '#e90be9ff',
+    marginBottom: '40px',
+    fontSize: '2rem',
+  },
+  msg: {
+    color: '#888',
+    marginBottom: '20px',
+    textAlign: 'center',
+  },
+  noPosts: {
+    color: '#fa46bb',
+    marginTop: '20px',
+    textAlign: 'center',
+  },
+  postCard: {
+    backgroundColor: '#fffefc',
+    padding: '20px',
+    borderRadius: '12px',
+    boxShadow: '0 0 8px rgba(0,0,0,0.05)',
+    marginBottom: '20px',
+  },
+  postTitle: {
+    margin: '0 0 10px',
+    fontSize: '1.2rem',
+    color: '#e90be9ff',
+  },
+  postContent: {
+    color: '#444',
+    lineHeight: '1.6',
+  },
+  actions: {
+    marginTop: '10px',
+    display: 'flex',
+    gap: '10px',
+  },
+  button: {
+    backgroundColor: '#ffd4d4',
+    color: '#e50ebdff',
+    border: 'none',
+    padding: '6px 12px',
+    borderRadius: '6px',
+    cursor: 'pointer',
+  },
+  formInput: {
+    padding: '10px',
+    width: '100%',
+    maxWidth: '500px',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    margin: '20px auto',
+    display: 'block',
+    fontSize: '16px',
+  },
+  submitBtn: {
+    padding: '10px 20px',
+    marginLeft: '10px',
+    borderRadius: '6px',
+    backgroundColor: '#b3676b',
+    color: 'white',
+    border: 'none',
+    cursor: 'pointer',
+  },
+
 };
 
 export default Journal; 
